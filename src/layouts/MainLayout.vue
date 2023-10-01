@@ -3,10 +3,29 @@ import { ref, onMounted, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 
-import { useOnlineStore } from '/src/stores/online.js'
+import { useFolderStore } from '/src/stores/folders.js'
+import { useServerStore } from '/src/stores/server.js'
+
+const { serverport } = storeToRefs(useServerStore())
+const { mediafolder } = storeToRefs(useFolderStore())
 
 const $r = useRouter()
-const { online } = storeToRefs(useOnlineStore())
+
+onMounted(() => {
+  ipc.on('db:rt', (args) => {
+    if (args && args.key) {
+      switch (args.key) {
+        case 'serverport':
+          serverport.value = args.value
+          break
+        case 'mediafolder':
+          mediafolder.value = args.value
+          break
+      }
+    }
+  })
+  ipc.send('db:find', { key: 'serverport' })
+})
 </script>
 
 <template>
@@ -14,12 +33,12 @@ const { online } = storeToRefs(useOnlineStore())
     <q-header class="bg-white text-black border-bottom">
       <q-toolbar class="justify-between">
         <div
-          class="q-pl-md cursor-pointer row no-wrap q-gutter-x-sm"
+          class="q-pl-md cursor-pointer row no-wrap q-gutter-x-sm items-center"
           @click="$r.push('/')"
         >
           <q-icon name="home" color="primary" size="sm" />
           <div class="font-ubuntumono font-md text-bold">TTS Server</div>
-          <div class="online">{{ online ? 'Online' : 'Offline' }}</div>
+          <div class="caption self-start">listening at {{ serverport }}</div>
         </div>
         <div>
           <div class="btn cursor-pointer" @click="$r.push('/setup')">Setup</div>

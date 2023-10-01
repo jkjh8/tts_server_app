@@ -1,13 +1,14 @@
 import { app, BrowserWindow } from 'electron'
 import path from 'path'
 import os from 'os'
+import ipcInit from './ipc'
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform()
 
 let mainWindow
 
-function createWindow () {
+function createWindow() {
   /**
    * Initial window options
    */
@@ -38,6 +39,8 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+  // ipc
+  ipcInit()
 }
 
 app.whenReady().then(createWindow)
