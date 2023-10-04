@@ -7,6 +7,8 @@ import httpLogger from 'morgan'
 import db from '../db'
 import logger from '../logger'
 
+import apiRouter from './routes'
+
 const webapp = express()
 
 webapp.use(express.json())
@@ -19,9 +21,12 @@ webapp.use(
     }
   })
 )
+
 if (process.env.NODE_ENV !== 'production') {
   webapp.use(httpLogger('dev'))
 }
+
+webapp.use('/api', apiRouter)
 
 async function openWebApp() {
   try {
