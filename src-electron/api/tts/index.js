@@ -4,9 +4,9 @@ import { PythonShell } from 'python-shell'
 import { app } from 'electron'
 import db from 'src-electron/db'
 import uniqueId from '../uniqueId'
-// import worker from './worker'
+import { Worker } from 'worker_threads'
 
-const pythonfilepath = path.resolve(__dirname, './tts.py')
+// const pythonfilepath = path.resolve(__dirname, './tts.py')
 const platform = process.platform || os.platform()
 
 const pythonPath = path.resolve(
@@ -30,11 +30,11 @@ function ttsGet(args) {
     const command = { ...args }
     const mediafolder = await getMediaFolder()
     console.log(mediafolder)
-    PythonShell.run(pythonfilepath, {
+    PythonShell.run('tts.py', {
       mode: 'json',
       pythonPath: pythonPath,
       pythonOptions: ['-u'],
-      scriptPath: __dirname,
+      scriptPath: './src-electron/api/tts',
       args: [
         JSON.stringify({
           ...args,
@@ -48,13 +48,14 @@ function ttsGet(args) {
       .catch((err) => {
         reject(err)
       })
+
     // if (command.comm === 'make_file') {
     //   command['filename'] = path.join(mediafolder, `${uniqueId(12).wav}`)
     // }
-    // const workerPath = path.resolve(__dirname, '../../worker.js')
+    // const workerPath = path.resolve('./src-electron/api/tts/', 'worker.js')
     // console.log(workerPath)
     // const worker = new Worker(workerPath, {
-    //   workerData: { pythonPath, args: command }
+    //   workerData: command
     // })
     // worker.on('message', (message) => {
     //   resolve(message)
