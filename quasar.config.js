@@ -192,7 +192,18 @@ module.exports = configure(function (/* ctx */) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'tts-server-app'
+        appId: 'tts-server-app',
+        extraResources: [
+          {
+            from: './venv',
+            to: 'venv',
+            filter: ['**/*']
+          }
+        ],
+        nsis: {
+          oneClick: false,
+          allowToChangeInstallationDirectory: true
+        }
       }
     },
 

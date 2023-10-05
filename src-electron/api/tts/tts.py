@@ -35,12 +35,8 @@ def get_info():
 
 
 if __name__ == "__main__":
-    if platform.system() == 'Windows':
-        import pyttsx3
-        engine = pyttsx3.init()
-    else:
-        import pyttsx4
-        engine = pyttsx4.init()
+    import pyttsx4
+    engine = pyttsx4.init()
 
     args = sys.argv[1]
     kwargs = json.loads(args)
